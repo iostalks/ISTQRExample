@@ -5,7 +5,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9049"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--iOSTalk-->
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="ViewController" sceneMemberID="viewController">
@@ -17,14 +17,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6fU-Jd-Jy4">
-                                <rect key="frame" x="281" y="285" width="38" height="30"/>
-                                <animations/>
-                                <state key="normal" title="Open"/>
-                                <connections>
-                                    <action selector="openAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Zd4-Pw-RUO"/>
-                                </connections>
-                            </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Scan Result" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="320" translatesAutoresizingMaskIntoConstraints="NO" id="uEl-ap-K7F">
                                 <rect key="frame" x="255" y="203.5" width="90.5" height="20.5"/>
                                 <animations/>
@@ -32,6 +24,21 @@
                                 <color key="textColor" red="0.50196081400000003" green="0.25098040700000002" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6fU-Jd-Jy4">
+                                <rect key="frame" x="242" y="285" width="117" height="30"/>
+                                <animations/>
+                                <color key="backgroundColor" red="0.14799999999999969" green="0.74943645134228176" blue="0.217" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="117" id="QyI-C8-0W3"/>
+                                    <constraint firstAttribute="height" constant="30" id="gQL-I3-mo2"/>
+                                </constraints>
+                                <state key="normal" title="Open">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="openAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Zd4-Pw-RUO"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -42,7 +49,7 @@
                             <constraint firstItem="6fU-Jd-Jy4" firstAttribute="top" secondItem="uEl-ap-K7F" secondAttribute="bottom" constant="61" id="nmh-LB-erh"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="54L-IA-MWs"/>
+                    <navigationItem key="navigationItem" title="iOSTalk" id="54L-IA-MWs"/>
                     <connections>
                         <outlet property="resultLabel" destination="uEl-ap-K7F" id="muP-2e-hG4"/>
                     </connections>

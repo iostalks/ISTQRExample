@@ -62,8 +62,8 @@ static const char * kISTScanQueueName = "kISTScanQueueName";
 - (void)configNavi
 {
     self.torchBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.torchBtn setTitleColor:[UIColor colorWithRed:0.148 green:1.000 blue:0.169 alpha:1.000] forState:UIControlStateNormal];
-    [self.torchBtn setTitle:@"NO" forState:UIControlStateNormal];
+    [self.torchBtn setTitleColor:[UIColor colorWithRed:0.148 green:0.749 blue:0.217 alpha:1.000] forState:UIControlStateNormal];
+    [self.torchBtn setTitle:@"ON" forState:UIControlStateNormal];
     [self.torchBtn setTitle:@"OFF" forState:UIControlStateSelected];
     [self.torchBtn addTarget:self
                  action:@selector(openTorchBtnOnTouched:)
@@ -77,7 +77,8 @@ static const char * kISTScanQueueName = "kISTScanQueueName";
 {
     self.qrView = [[ISTQRView alloc] init];
     self.qrView.backgroundColor = [UIColor clearColor];
-//    [self.qrView.displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
+    
+    [self.qrView.displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
     [self.view addSubview:self.qrView];
 }
 
@@ -169,6 +170,10 @@ static const char * kISTScanQueueName = "kISTScanQueueName";
 - (void)stopScan
 {
     [_captureSession stopRunning];
+    
+    // 必须释放displayLink
+    [self.qrView.displayLink removeFromRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
+    self.qrView = nil;
 }
 
 #pragma mark - AVCaptureMetadataOutputObjectsDelegate

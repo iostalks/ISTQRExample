@@ -115,14 +115,9 @@
 			isa = PBXGroup;
 			children = (
 				FEBB349A1C008F620096C999 /* ISTQRClass */,
-				FEBB346A1C008F4D0096C999 /* AppDelegate.h */,
-				FEBB346B1C008F4D0096C999 /* AppDelegate.m */,
 				FEBB346D1C008F4D0096C999 /* ViewController.h */,
 				FEBB346E1C008F4D0096C999 /* ViewController.m */,
 				FEBB34701C008F4D0096C999 /* Main.storyboard */,
-				FEBB34731C008F4D0096C999 /* Assets.xcassets */,
-				FEBB34751C008F4D0096C999 /* LaunchScreen.storyboard */,
-				FEBB34781C008F4D0096C999 /* Info.plist */,
 				FEBB34671C008F4D0096C999 /* Supporting Files */,
 			);
 			path = ISTQRExample;
@@ -131,6 +126,11 @@
 		FEBB34671C008F4D0096C999 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				FEBB346A1C008F4D0096C999 /* AppDelegate.h */,
+				FEBB346B1C008F4D0096C999 /* AppDelegate.m */,
+				FEBB34731C008F4D0096C999 /* Assets.xcassets */,
+				FEBB34751C008F4D0096C999 /* LaunchScreen.storyboard */,
+				FEBB34781C008F4D0096C999 /* Info.plist */,
 				FEBB34A31C014FD90096C999 /* AVFoundation.framework */,
 				FEBB34681C008F4D0096C999 /* main.m */,
 			);
@@ -403,7 +403,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -441,7 +441,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -454,6 +454,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = ISTQRExample/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = iOSTalk.ISTQRExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -465,6 +466,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = ISTQRExample/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = iOSTalk.ISTQRExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -538,6 +540,7 @@
 				FEBB34931C008F4D0096C999 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		FEBB34941C008F4D0096C999 /* Build configuration list for PBXNativeTarget "ISTQRExampleTests" */ = {
 			isa = XCConfigurationList;
@@ -546,6 +549,7 @@
 				FEBB34961C008F4D0096C999 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		FEBB34971C008F4D0096C999 /* Build configuration list for PBXNativeTarget "ISTQRExampleUITests" */ = {
 			isa = XCConfigurationList;
@@ -554,6 +558,7 @@
 				FEBB34991C008F4D0096C999 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

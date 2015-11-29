@@ -10,7 +10,6 @@
 
 #define IST_SCREEN_BOUNDS  [[UIScreen mainScreen] bounds]
 
-
 @interface ISTQRView()
 
 @property (nonatomic, strong) UIImageView *qrLineImageView;
@@ -53,18 +52,14 @@
     self.qrLineImageView.frame = (CGRect){lineOrigin_x, lineOrigin_y, lineWidth, 5};
 }
 
-- (void)dealloc
-{
-    
-}
-
 - (void)commonInitialize
 {
     [self initializeQRLine];
 
-    self.displayLink = [CADisplayLink displayLinkWithTarget:self
+    __weak __typeof (self) weakSelf = self;
+    self.displayLink = [CADisplayLink displayLinkWithTarget:weakSelf
                                                    selector:@selector(displayLinkAction)];
-    [self.displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
+//    [self.displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
 }
 
 - (void)initializeQRLine
