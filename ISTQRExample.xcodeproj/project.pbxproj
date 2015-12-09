@@ -243,6 +243,7 @@
 				TargetAttributes = {
 					FEBB34631C008F4D0096C999 = {
 						CreatedOnToolsVersion = 7.1;
+						DevelopmentTeam = 7779KFR2G9;
 					};
 					FEBB347C1C008F4D0096C999 = {
 						CreatedOnToolsVersion = 7.1;
@@ -453,10 +454,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = ISTQRExample/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = iOSTalk.ISTQRExample;
+				PRODUCT_BUNDLE_IDENTIFIER = iOSTalk.ISTQRExample6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -465,10 +467,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = ISTQRExample/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = iOSTalk.ISTQRExample;
+				PRODUCT_BUNDLE_IDENTIFIER = iOSTalk.ISTQRExample6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

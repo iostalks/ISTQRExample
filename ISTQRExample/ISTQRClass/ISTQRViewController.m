@@ -10,11 +10,14 @@
 #import <AVFoundation/AVFoundation.h>
 #import "ISTQRView.h"
 
+typedef NS_ENUM( NSInteger, ISTCamSetupResult ) {
+    ISTCamSetupResultSuccess,
+    ISTCamSetupResultCameraNotAuthorized,
+    ISTCamSetupResultSessionConfigurationFailed
+};
+
 CGFloat const kISTClearAreaWidth = 250.0;
 static const char * kISTScanQueueName = "kISTScanQueueName";
-
-//#define kISTScreenWith    [UIScreen mainScreen].bounds.size.width
-//#define kISTScreenHeight  [UIScreen mainScreen].bounds.size.height
 
 @interface ISTQRViewController ()<AVCaptureMetadataOutputObjectsDelegate>
 
@@ -25,9 +28,16 @@ static const char * kISTScanQueueName = "kISTScanQueueName";
 @property (nonatomic) AVCaptureSession *captureSession;
 @property (nonatomic) AVCaptureVideoPreviewLayer *videoPreviewLayer;
 
+@property (nonatomic) ISTCamSetupResult setupResult;
+
 @end
 
 @implementation ISTQRViewController
+
+- (void)loadView
+{
+    [super loadView];
+}
 
 - (void)viewDidLoad
 {
@@ -36,9 +46,21 @@ static const char * kISTScanQueueName = "kISTScanQueueName";
     self.title = NSLocalizedString(@"条码/二维码扫描", @"ISTTitleKey");
     
     [self configNavi];
+    
     [self configQRView];
     
-    [self setup];
+    // 检查设别授权状态，Video类型必选，Audio类型可选
+    [self checkAuthorizationStatus];
+    
+     [self setupCaptureSession];
+    
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    [self startScan];
 }
 
 - (void)viewDidDisappear:(BOOL)animated
@@ -80,100 +102,99 @@ static const char * kISTScanQueueName = "kISTScanQueueName";
     
     [self.qrView.displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
     [self.view addSubview:self.qrView];
+    
 }
 
 #pragma mark - Setup
 
-- (void)setup
+- (void)checkAuthorizationStatus
 {
-    AVAuthorizationStatus authorizationStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
-    
-    switch (authorizationStatus) {
-            
-        case AVAuthorizationStatusNotDetermined: {
-            [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo
-                                     completionHandler: ^(BOOL granted) {
-                                         
-                if (granted) {
-                    [self startScan];
-                } else {
-                    [self showAlertViewWithMessage:@"Authorization status not determined"];
+    switch ( [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio])
+    {
+        case AVAuthorizationStatusNotDetermined:
+        {
+            [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^( BOOL granted ) {
+                if ( ! granted ) {
+                    self.setupResult = ISTCamSetupResultCameraNotAuthorized;
                 }
             }];
             break;
         }
-            
-        case AVAuthorizationStatusAuthorized: {
-            [self startScan];
+        case AVAuthorizationStatusAuthorized:
+        {
+            // 已授权
             break;
         }
-            
-        case AVAuthorizationStatusRestricted:
-            break;
-            
-        case AVAuthorizationStatusDenied: {
-             [self showAlertViewWithMessage:@"Authorization status denied"];
-            break;
-        }
-            
         default: {
+            self.setupResult = ISTCamSetupResultCameraNotAuthorized;
             break;
         }
     }
+}
+
+- (void)setupCaptureSession
+{
+        if (self.setupResult != ISTCamSetupResultSuccess) {
+            return;
+        }
+        
+        NSError * error;
+        AVCaptureDevice *captureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+        
+        // metadata input
+        _captureDeviceInput = [AVCaptureDeviceInput deviceInputWithDevice:captureDevice error:&error];
+        if (!_captureDeviceInput) {
+            [self showAlertViewWithMessage:[error localizedDescription]];
+            [self.navigationController popViewControllerAnimated:YES];
+            return;
+        }
+        
+        // session
+        _captureSession = [[AVCaptureSession alloc] init];
+        _captureSession.sessionPreset = AVCaptureSessionPresetHigh;
+        if ([_captureSession canAddInput:_captureDeviceInput]) {
+            [_captureSession addInput:_captureDeviceInput];
+        }
+        
+        AVCaptureMetadataOutput *captureMetadataOutput = [[AVCaptureMetadataOutput alloc] init];
+        if ([_captureSession canAddOutput:captureMetadataOutput]) {
+            [_captureSession addOutput:captureMetadataOutput];
+        }
+        
+        // create output dispatch queue.
+        dispatch_queue_t dispatchQueue;
+        dispatchQueue = dispatch_queue_create(kISTScanQueueName, NULL);
+        [captureMetadataOutput setMetadataObjectsDelegate:self queue:dispatchQueue];
+        
+        // setup metadata type
+        [captureMetadataOutput setMetadataObjectTypes:@[AVMetadataObjectTypeEAN13Code,
+                                                        AVMetadataObjectTypeEAN8Code,
+                                                        AVMetadataObjectTypeCode128Code,
+                                                        AVMetadataObjectTypeQRCode]];
+    
 }
 
 - (void)startScan
 {
-    NSError * error;
-    AVCaptureDevice *captureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-    
-    // metadata input
-    _captureDeviceInput = [AVCaptureDeviceInput deviceInputWithDevice:captureDevice error:&error];
-    if (!_captureDeviceInput) {
-        [self showAlertViewWithMessage:[error localizedDescription]];
-        [self.navigationController popViewControllerAnimated:YES];
-        return;
-    }
-
-    // session
-    _captureSession = [[AVCaptureSession alloc] init];
-    _captureSession.sessionPreset = AVCaptureSessionPresetHigh;
-    if ([_captureSession canAddInput:_captureDeviceInput]) {
-        [_captureSession addInput:_captureDeviceInput];
-    }
-    
-    AVCaptureMetadataOutput *captureMetadataOutput = [[AVCaptureMetadataOutput alloc] init];
-    if ([_captureSession canAddOutput:captureMetadataOutput]) {
-        [_captureSession addOutput:captureMetadataOutput];
-    }
-    
-    // create output dispatch queue.
-    dispatch_queue_t dispatchQueue;
-    dispatchQueue = dispatch_queue_create(kISTScanQueueName, NULL);
-    [captureMetadataOutput setMetadataObjectsDelegate:self queue:dispatchQueue];
-    
-    // setup metadata type
-    [captureMetadataOutput setMetadataObjectTypes:@[AVMetadataObjectTypeEAN13Code,
-                                                    AVMetadataObjectTypeEAN8Code,
-                                                    AVMetadataObjectTypeCode128Code,
-                                                    AVMetadataObjectTypeQRCode]];
-    
-    // output layer
-    _videoPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:_captureSession];
-    _videoPreviewLayer.frame = [UIScreen mainScreen].bounds;
-    _videoPreviewLayer.videoGravity = AVLayerVideoGravityResize;
-    [self.view.layer insertSublayer:_videoPreviewLayer atIndex:0];
-    
-    [_captureSession startRunning];
+        _videoPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:_captureSession];
+        _videoPreviewLayer.frame = [UIScreen mainScreen].bounds;
+        _videoPreviewLayer.videoGravity = AVLayerVideoGravityResize;
+        [self.view.layer insertSublayer:_videoPreviewLayer atIndex:0];
+        
+        [_captureSession startRunning];
 }
 
 - (void)stopScan
 {
-    [_captureSession stopRunning];
-    
-    // 必须释放displayLink
-    [self.qrView.displayLink removeFromRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
-    self.qrView = nil;
+        [_captureSession stopRunning];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            //
+            // 必须释放displayLink
+            [self.qrView.displayLink removeFromRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
+            self.qrView = nil;
+            
+        });
 }
 
 #pragma mark - AVCaptureMetadataOutputObjectsDelegate
@@ -226,7 +247,10 @@ static const char * kISTScanQueueName = "kISTScanQueueName";
 {
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Prompt" message:message preferredStyle:UIAlertControllerStyleAlert];
     
-    UIAlertAction *action = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:nil];
+    UIAlertAction *action = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        [self.navigationController popViewControllerAnimated:YES];
+    }];
+    
     [alertController addAction:action];
     
     [self presentViewController:alertController animated:YES completion:nil];
